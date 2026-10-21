@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import com.hmtautosolutions.hmttvocale.LocaleHelper
 import com.hmtautosolutions.hmttvocale.Prefs
 import com.hmtautosolutions.hmttvocale.R
+import com.hmtautosolutions.hmttvocale.speech.Tts
 import com.hmtautosolutions.hmttvocale.ui.MainActivity
 import com.hmtautosolutions.hmttvocale.wake.WakeWordEngine
 import com.hmtautosolutions.hmttvocale.wake.WakeWordEngineFactory
@@ -62,6 +63,8 @@ class ListeningService : Service(), WakeWordEngine.Listener {
 
     private lateinit var prefs: Prefs
     private var engine: WakeWordEngine? = null
+    private var tts: Tts? = null
+    private var overlay: OverlayAssistant? = null
 
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(LocaleHelper.wrap(newBase, Prefs(newBase).language))
@@ -71,6 +74,7 @@ class ListeningService : Service(), WakeWordEngine.Listener {
         super.onCreate()
         prefs = Prefs(this)
         isRunning = true
+        tts = Tts(this)
         val nm = getSystemService(NotificationManager::class.java)
         nm.createNotificationChannel(NotificationChannel(CHANNEL_ID,
             getString(R.string.notif_channel), NotificationManager.IMPORTANCE_LOW))
@@ -103,6 +107,7 @@ class ListeningService : Service(), WakeWordEngine.Listener {
     }
 
     private fun pauseEngine() {
+        overlay?.finishSilently()
         engine?.stop()
         isListening = false
         updateNotification(getString(R.string.notif_text_paused))
@@ -110,6 +115,13 @@ class ListeningService : Service(), WakeWordEngine.Listener {
 
     override fun onWakeWord(transcript: String) {
         isListening = false
+        val t = tts
+        if (OverlayAssistant.canShow(this) && t != null) {
+            updateNotification(getString(R.string.notif_text))
+            val o = overlay ?: OverlayAssistant(this, prefs, t) { startEngineIfAllowed() }.also { overlay = it }
+            o.show(transcript)
+            return
+        }
         val i = Intent(this, MainActivity::class.java)
             .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
             .putExtra(MainActivity.EXTRA_FROM_WAKE, true)
@@ -148,6 +160,10 @@ class ListeningService : Service(), WakeWordEngine.Listener {
     }
 
     override fun onDestroy() {
+        overlay?.destroy()
+        overlay = null
+        tts?.shutdown()
+        tts = null
         engine?.destroy()
         engine = null
         isRunning = false

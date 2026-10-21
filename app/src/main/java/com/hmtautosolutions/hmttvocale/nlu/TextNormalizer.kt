@@ -25,7 +25,7 @@ object TextNormalizer {
     }
 
     /** Spellings the speech recognizer may return for the wake word "Geely". */
-    val WAKE_WORDS = listOf("geely", "jili", "gili", "djili", "jeely", "geeli", "jilly", "جيلي")
+    val WAKE_WORDS = listOf("geely", "jili", "gili", "djili", "jeely", "geeli", "jilly", "jeeli", "جيلي", "جلي", "جيلى")
         .map { normalize(it) }
 
     /** Returns (found, text after the wake word). */

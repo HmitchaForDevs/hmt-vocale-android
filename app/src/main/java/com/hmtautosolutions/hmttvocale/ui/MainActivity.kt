@@ -2,6 +2,8 @@ package com.hmtautosolutions.hmttvocale.ui
 
 import android.Manifest
 import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Handler
@@ -110,6 +112,20 @@ class MainActivity : BaseActivity(), SpeechInput.Listener {
         simBadge.visibility = if (prefs.simulationMode) View.VISIBLE else View.GONE
         ListeningService.send(this, ListeningService.ACTION_PAUSE)
         updateMicStatus()
+        askOverlayPermissionOnce()
+    }
+
+    /** The floating "Geely" bubble needs "display over other apps"; ask once, user can grant later in Android settings. */
+    private fun askOverlayPermissionOnce() {
+        if (!prefs.backgroundListening || Settings.canDrawOverlays(this)) return
+        val sp = getSharedPreferences("hmt_overlay", MODE_PRIVATE)
+        if (sp.getBoolean("asked", false)) return
+        sp.edit().putBoolean("asked", true).apply()
+        try {
+            startActivity(Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:$packageName")))
+        } catch (e: Exception) {
+            prefs.lastError = "Overlay permission screen unavailable: ${e.message}"
+        }
     }
 
     override fun onPause() {
