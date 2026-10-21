@@ -13,6 +13,8 @@
         <item name="android:textColorHint">@color/hmt_grey</item>
     </style>
 
+    <style name="Hmt" />
+
     <style name="Hmt.Title">
         <item name="android:textColor">@color/hmt_white</item>
         <item name="android:textSize">28sp</item>
