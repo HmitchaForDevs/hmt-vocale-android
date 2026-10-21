@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/hmt_black"
+    android:fillViewport="true">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="64dp"
+        android:paddingTop="32dp"
+        android:paddingEnd="64dp"
+        android:paddingBottom="32dp">
+
+        <!-- Step 1: welcome + language -->
+        <LinearLayout
+            android:id="@+id/stepWelcome"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/ic_logo" />
+
+            <TextView
+                style="@style/Hmt.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/setup_welcome_title" />
+
+            <TextView
+                style="@style/Hmt.Muted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="@string/setup_welcome_body" />
+
+            <TextView
+                style="@style/Hmt.Section"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setup_choose_language" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/langFr"
+                    style="@style/Hmt.Choice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/lang_fr_label" />
+
+                <Button
+                    android:id="@+id/langEn"
+                    style="@style/Hmt.Choice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/lang_en_label" />
+
+                <Button
+                    android:id="@+id/langAr"
+                    style="@style/Hmt.Choice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:layout_weight="1"
+                    android:text="@string/lang_ar_label" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/next1"
+                style="@style/Hmt.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:minWidth="280dp"
+                android:text="@string/btn_next" />
+        </LinearLayout>
+
+        <!-- Step 2: microphone -->
+        <LinearLayout
+            android:id="@+id/stepMic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/Hmt.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setup_mic_title" />
+
+            <TextView
+                style="@style/Hmt.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/setup_mic_body" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/grantMic"
+                    style="@style/Hmt.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_grant_mic" />
+
+                <TextView
+                    android:id="@+id/permStatus"
+                    style="@style/Hmt.Muted"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp" />
+            </LinearLayout>
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/swBackground"
+                style="@style/Hmt.Switch"
+                android:layout_marginTop="16dp"
+                android:text="@string/setup_bg_switch" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/swBoot"
+                style="@style/Hmt.Switch"
+                android:text="@string/setup_boot_switch" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/back2"
+                    style="@style/Hmt.Button.Secondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_back" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/next2"
+                    style="@style/Hmt.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_next" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Step 3: optional online AI -->
+        <LinearLayout
+            android:id="@+id/stepAi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                style="@style/Hmt.Title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/setup_ai_title" />
+
+            <TextView
+                style="@style/Hmt.Body"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:text="@string/setup_ai_body" />
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/swAi"
+                style="@style/Hmt.Switch"
+                android:layout_marginTop="12dp"
+                android:text="@string/ai_enable" />
+
+            <EditText
+                android:id="@+id/etEndpoint"
+                style="@style/Hmt.Input"
+                android:hint="@string/ai_endpoint_hint"
+                android:importantForAutofill="no"
+                android:inputType="textUri" />
+
+            <EditText
+                android:id="@+id/etModel"
+                style="@style/Hmt.Input"
+                android:hint="@string/ai_model_hint"
+                android:importantForAutofill="no"
+                android:inputType="text" />
+
+            <EditText
+                android:id="@+id/etKey"
+                style="@style/Hmt.Input"
+                android:hint="@string/ai_key_hint"
+                android:importantForAutofill="no"
+                android:inputType="textPassword" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/back3"
+                    style="@style/Hmt.Button.Secondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_back" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/skip"
+                    style="@style/Hmt.Button.Secondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="12dp"
+                    android:text="@string/btn_skip" />
+
+                <Button
+                    android:id="@+id/finish"
+                    style="@style/Hmt.Button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_finish" />
+            </LinearLayout>
+        </LinearLayout>
+    </FrameLayout>
+</ScrollView>

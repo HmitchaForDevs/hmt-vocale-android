@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/hmt_black"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:background="@color/hmt_charcoal"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp">
+
+        <TextView
+            style="@style/Hmt.Title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/settings_title" />
+
+        <Button
+            android:id="@+id/backButton"
+            style="@style/Hmt.Button.Secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_close" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="48dp"
+            android:paddingEnd="48dp"
+            android:paddingBottom="48dp">
+
+            <TextView style="@style/Hmt.Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings_language" />
+            <RadioGroup
+                android:id="@+id/langGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <RadioButton android:id="@+id/rbFr" android:layout_width="0dp" android:layout_weight="1" android:layout_height="64dp" android:text="@string/lang_fr_label" android:textColor="@color/hmt_white" android:textSize="18sp" />
+                <RadioButton android:id="@+id/rbEn" android:layout_width="0dp" android:layout_weight="1" android:layout_height="64dp" android:text="@string/lang_en_label" android:textColor="@color/hmt_white" android:textSize="18sp" />
+                <RadioButton android:id="@+id/rbAr" android:layout_width="0dp" android:layout_weight="1" android:layout_height="64dp" android:text="@string/lang_ar_label" android:textColor="@color/hmt_white" android:textSize="18sp" />
+            </RadioGroup>
+            <androidx.appcompat.widget.SwitchCompat android:id="@+id/swVoiceLang" style="@style/Hmt.Switch" android:text="@string/settings_voice_lang" />
+
+            <TextView style="@style/Hmt.Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings_voice" />
+            <androidx.appcompat.widget.SwitchCompat android:id="@+id/swTts" style="@style/Hmt.Switch" android:text="@string/settings_tts" />
+            <TextView style="@style/Hmt.Muted" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings_rate" />
+            <SeekBar android:id="@+id/seekRate" android:layout_width="match_parent" android:layout_height="56dp" android:max="20" />
+            <androidx.appcompat.widget.SwitchCompat android:id="@+id/swOffline" style="@style/Hmt.Switch" android:text="@string/settings_prefer_offline" />
+
+            <TextView style="@style/Hmt.Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings_wake" />
+            <androidx.appcompat.widget.SwitchCompat android:id="@+id/swWake" style="@style/Hmt.Switch" android:text="@string/settings_wake_switch" />
+            <TextView style="@style/Hmt.Muted" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="@string/wake_engine_note" />
+
+            <TextView style="@style/Hmt.Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings_background" />
+            <androidx.appcompat.widget.SwitchCompat android:id="@+id/swBackground" style="@style/Hmt.Switch" android:text="@string/settings_bg_switch" />
+            <androidx.appcompat.widget.SwitchCompat android:id="@+id/swBoot" style="@style/Hmt.Switch" android:text="@string/settings_boot_switch" />
+            <TextView android:id="@+id/serviceStatus" style="@style/Hmt.Body" android:layout_width="match_parent" android:layout_height="wrap_content" />
+
+            <TextView style="@style/Hmt.Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings_vehicle" />
+            <androidx.appcompat.widget.SwitchCompat android:id="@+id/swSimulation" style="@style/Hmt.Switch" android:text="@string/settings_simulation" />
+            <TextView style="@style/Hmt.Muted" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings_vehicle_caps" />
+            <TextView android:id="@+id/vehicleCaps" style="@style/Hmt.Body" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:background="@drawable/bg_card" android:padding="16dp" />
+
+            <TextView style="@style/Hmt.Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings_ai" />
+            <androidx.appcompat.widget.SwitchCompat android:id="@+id/swAi" style="@style/Hmt.Switch" android:text="@string/ai_enable" />
+            <EditText android:id="@+id/etEndpoint" style="@style/Hmt.Input" android:hint="@string/ai_endpoint_hint" android:importantForAutofill="no" android:inputType="textUri" />
+            <EditText android:id="@+id/etModel" style="@style/Hmt.Input" android:hint="@string/ai_model_hint" android:importantForAutofill="no" android:inputType="text" />
+            <EditText android:id="@+id/etKey" style="@style/Hmt.Input" android:hint="@string/ai_key_hint" android:importantForAutofill="no" android:inputType="textPassword" />
+            <Button android:id="@+id/btnSaveAi" style="@style/Hmt.Button" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/btn_save" />
+
+            <TextView style="@style/Hmt.Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings_tests" />
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal">
+                <Button android:id="@+id/btnTestMic" style="@style/Hmt.Button" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginEnd="12dp" android:text="@string/btn_test_mic" />
+                <Button android:id="@+id/btnTestTts" style="@style/Hmt.Button.Secondary" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/btn_test_tts" />
+            </LinearLayout>
+            <TextView android:id="@+id/testResult" style="@style/Hmt.Body" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" />
+
+            <TextView style="@style/Hmt.Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings_commands" />
+            <TextView style="@style/Hmt.Body" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_card" android:padding="16dp" android:text="@string/commands_list" />
+
+            <TextView style="@style/Hmt.Section" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings_diagnostics" />
+            <TextView android:id="@+id/diagText" style="@style/Hmt.Muted" android:layout_width="match_parent" android:layout_height="wrap_content" android:background="@drawable/bg_card" android:padding="16dp" android:textIsSelectable="true" />
+            <Button android:id="@+id/btnRefresh" style="@style/Hmt.Button.Secondary" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="@string/btn_refresh" />
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

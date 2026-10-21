@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="hmt_black">#FF000000</color>
+    <color name="hmt_charcoal">#FF111114</color>
+    <color name="hmt_surface">#FF1B1B20</color>
+    <color name="hmt_line">#FF2A2A31</color>
+    <color name="hmt_red">#FFE10600</color>
+    <color name="hmt_red_dark">#FF8E0400</color>
+    <color name="hmt_red_dim">#FF5A0A08</color>
+    <color name="hmt_white">#FFFFFFFF</color>
+    <color name="hmt_grey">#FF9A9AA3</color>
+    <color name="hmt_error">#FFFF6A3D</color>
+    <color name="hmt_ok">#FF3DDC84</color>
+</resources>
