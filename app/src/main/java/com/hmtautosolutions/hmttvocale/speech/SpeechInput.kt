@@ -3,12 +3,22 @@ package com.hmtautosolutions.hmttvocale.speech
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import com.hmtautosolutions.hmttvocale.R
+import org.json.JSONObject
+import org.vosk.Recognizer
+import kotlin.math.log10
+import kotlin.math.sqrt
 
-/** Thin wrapper over the Android system SpeechRecognizer. Must be used from the main thread. */
+/**
+ * Speech input. Uses the bundled offline engine (Vosk) for French and English, so it works
+ * without Google or internet. Falls back to the system SpeechRecognizer (e.g. Arabic).
+ * Must be used from the main thread.
+ */
 class SpeechInput(private val context: Context, private val listener: Listener) {
 
     interface Listener {
@@ -19,16 +29,90 @@ class SpeechInput(private val context: Context, private val listener: Listener) 
         fun onError(code: Int, message: String)
     }
 
+    private val main = Handler(Looper.getMainLooper())
     private var recognizer: SpeechRecognizer? = null
+    private var vRec: Recognizer? = null
+    private var vMic: VoskMic? = null
+    private var session = 0
 
-    fun isAvailable(): Boolean = SpeechRecognizer.isRecognitionAvailable(context)
+    private fun systemAvailable() = SpeechRecognizer.isRecognitionAvailable(context)
+
+    fun isAvailable(): Boolean = systemAvailable() ||
+        VoskModels.isBundled(context, "model-fr") || VoskModels.isBundled(context, "model-en")
 
     fun start(languageTag: String, preferOffline: Boolean) {
-        if (!isAvailable()) {
+        destroy()
+        val lang = languageTag.substringBefore('-')
+        if (VoskModels.commandsOffline(lang) && VoskModels.isBundled(context, VoskModels.assetFor(lang))) {
+            startVosk(lang)
+        } else {
+            startSystem(languageTag, preferOffline)
+        }
+    }
+
+    private fun startVosk(lang: String) {
+        val my = ++session
+        VoskModels.load(context, VoskModels.assetFor(lang)) { model, err ->
+            if (my != session) return@load
+            if (model == null) { listener.onError(SpeechRecognizer.ERROR_CLIENT, err ?: ""); return@load }
+            val rec = try { Recognizer(model, VoskModels.SAMPLE_RATE) } catch (e: Exception) {
+                listener.onError(SpeechRecognizer.ERROR_CLIENT, errorMessage(context, SpeechRecognizer.ERROR_CLIENT)); return@load
+            }
+            vRec = rec
+            val started = System.currentTimeMillis()
+            var heard = false
+            var lastPartial = ""
+            var done = false
+            fun finishWith(text: String?, code: Int) {
+                if (my != session) return
+                session++
+                stopVosk()
+                if (!text.isNullOrBlank()) listener.onResult(listOf(text))
+                else listener.onError(code, errorMessage(context, code))
+            }
+            val onChunk: (ShortArray, Int) -> Unit = chunk@{ buf, n ->
+                if (done) return@chunk
+                var sum = 0.0
+                for (i in 0 until n) sum += buf[i].toDouble() * buf[i]
+                val db = (20 * log10(sqrt(sum / n) + 1) - 40).toFloat() / 4f
+                val final = rec.acceptWaveForm(buf, n)
+                val elapsed = System.currentTimeMillis() - started
+                if (final) {
+                    val t = JSONObject(rec.result).optString("text")
+                    if (t.isNotBlank()) { done = true; main.post { finishWith(t, 0) } }
+                } else {
+                    val p = JSONObject(rec.partialResult).optString("partial")
+                    if (p.isNotBlank()) heard = true
+                    main.post {
+                        if (my != session) return@post
+                        listener.onRms(db)
+                        if (p.isNotBlank() && p != lastPartial) { lastPartial = p; listener.onPartial(p) }
+                    }
+                }
+                if (!done && ((!heard && elapsed > 7000) || elapsed > 15000)) {
+                    done = true
+                    val t = JSONObject(rec.finalResult).optString("text")
+                    main.post { finishWith(t, SpeechRecognizer.ERROR_SPEECH_TIMEOUT) }
+                }
+            }
+            val mic = VoskMic(onChunk) { msg -> if (my == session) { session++; stopVosk(); listener.onError(SpeechRecognizer.ERROR_AUDIO, msg) } }
+            vMic = mic
+            mic.start()
+            listener.onReady()
+        }
+    }
+
+    private fun stopVosk() {
+        vMic?.stop(); vMic = null
+        vRec?.let { try { it.close() } catch (_: Exception) {} }
+        vRec = null
+    }
+
+    private fun startSystem(languageTag: String, preferOffline: Boolean) {
+        if (!systemAvailable()) {
             listener.onError(-1, context.getString(R.string.err_no_recognizer))
             return
         }
-        destroy()
         val r = SpeechRecognizer.createSpeechRecognizer(context)
         recognizer = r
         r.setRecognitionListener(object : RecognitionListener {
@@ -63,11 +147,24 @@ class SpeechInput(private val context: Context, private val listener: Listener) 
         }
     }
 
-    fun stop() { recognizer?.stopListening() }
+    fun stop() {
+        recognizer?.stopListening()
+        val rec = vRec ?: return
+        val my = session
+        vMic?.stop(); vMic = null
+        val t = try { JSONObject(rec.finalResult).optString("text") } catch (_: Exception) { "" }
+        stopVosk()
+        if (my == session) {
+            if (t.isNotBlank()) listener.onResult(listOf(t))
+            else listener.onError(SpeechRecognizer.ERROR_NO_MATCH, errorMessage(context, SpeechRecognizer.ERROR_NO_MATCH))
+        }
+    }
 
-    fun cancel() { recognizer?.cancel() }
+    fun cancel() { session++; recognizer?.cancel(); stopVosk() }
 
     fun destroy() {
+        session++
+        stopVosk()
         recognizer?.let {
             try { it.cancel(); it.destroy() } catch (_: Exception) {}
         }

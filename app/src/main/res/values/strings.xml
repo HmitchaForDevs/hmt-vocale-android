@@ -48,7 +48,7 @@
     <string name="settings_voice_lang">Allow changing language by voice</string>
     <string name="settings_wake">Wake word \"Geely\"</string>
     <string name="settings_wake_switch">Detect \"Geely\" (experimental)</string>
-    <string name="wake_engine_note">Current engine uses the tablet\'s speech recognizer in a loop and checks each phrase for \"Geely\". It is not a dedicated low-power detector: it may use internet, battery and play beeps. A dedicated on-device engine is planned.</string>
+    <string name="wake_engine_note">« Geely » is detected directly on the tablet with a bundled offline model: no Google, no internet, no beeps. French and English commands are also understood offline. Arabic commands still use the tablet\'s own speech service if it has one.</string>
     <string name="settings_background">Background listening</string>
     <string name="settings_bg_switch">Enable background service</string>
     <string name="settings_boot_switch">Start at tablet boot</string>
@@ -92,7 +92,7 @@
     <string name="diag_tts">Voice output</string>
     <string name="diag_ai">Online AI configured</string>
     <string name="diag_wake_engine">Wake-word engine</string>
-    <string name="wake_engine_name">System recognizer loop (experimental)</string>
+    <string name="wake_engine_name">Offline on-device (Vosk)</string>
     <string name="diag_last_error">Last error</string>
     <string name="err_no_recognizer">No speech recognition service is installed on this tablet.</string>
     <string name="err_network">Network problem during speech recognition.</string>

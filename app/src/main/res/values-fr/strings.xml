@@ -44,7 +44,7 @@
     <string name="settings_voice_lang">Autoriser le changement de langue à la voix</string>
     <string name="settings_wake">Mot d\'activation « Geely »</string>
     <string name="settings_wake_switch">Détecter « Geely » (expérimental)</string>
-    <string name="wake_engine_note">Le moteur actuel utilise la reconnaissance vocale de la tablette en boucle et vérifie chaque phrase pour « Geely ». Ce n\'est pas un détecteur dédié basse consommation : il peut utiliser internet, la batterie et émettre des bips. Un moteur local dédié est prévu.</string>
+    <string name="wake_engine_note">« Geely » est détecté directement sur la tablette avec un modèle intégré : sans Google, sans internet, sans bip. Les commandes en français et en anglais sont aussi comprises hors ligne. Les commandes en arabe utilisent encore la reconnaissance de la tablette si elle existe.</string>
     <string name="settings_background">Écoute en arrière-plan</string>
     <string name="settings_bg_switch">Activer le service en arrière-plan</string>
     <string name="settings_boot_switch">Démarrer au démarrage de la tablette</string>
@@ -88,7 +88,7 @@
     <string name="diag_tts">Sortie vocale</string>
     <string name="diag_ai">IA en ligne configurée</string>
     <string name="diag_wake_engine">Moteur de mot d\'activation</string>
-    <string name="wake_engine_name">Boucle de reconnaissance système (expérimental)</string>
+    <string name="wake_engine_name">Hors ligne sur la tablette (Vosk)</string>
     <string name="diag_last_error">Dernière erreur</string>
     <string name="err_no_recognizer">Aucun service de reconnaissance vocale n\'est installé sur cette tablette.</string>
     <string name="err_network">Problème réseau pendant la reconnaissance vocale.</string>

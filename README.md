@@ -120,3 +120,10 @@ Add an app: one line in `AppCatalog`. Add a phrase: add it to a rule in `IntentP
 
 ## 10. Build locally (optional)
 Install JDK 17, Android SDK and Gradle 8.7, then `gradle testDebugUnitTest assembleDebug`. (No Gradle wrapper jar is committed; CI installs Gradle 8.7 directly. Run `gradle wrapper --gradle-version 8.7` locally to add one.)
+
+## Offline voice (v1.1.0)
+
+- « Geely » is detected **on the tablet** with the free [Vosk](https://alphacephei.com/vosk/) small models (Apache 2.0), bundled into the APK at build time by `scripts/fetch-models.sh` (models are not committed).
+- French and English commands are recognized offline. Arabic commands still need the tablet's system speech recognizer (no small Arabic Vosk model exists); in Arabic mode the French model listens for « يا جيلي ».
+- If the models are missing, the app falls back to the system recognizer loop.
+- Not yet tested on a real Coolray: accuracy with road noise and music must be checked in the car.

@@ -19,6 +19,9 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      - name: Download offline speech models
+        run: bash scripts/fetch-models.sh
+
       - name: Set up Gradle (with cache)
         uses: gradle/actions/setup-gradle@v4
         with:

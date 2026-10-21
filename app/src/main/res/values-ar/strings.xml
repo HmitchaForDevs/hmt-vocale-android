@@ -44,7 +44,7 @@
     <string name="settings_voice_lang">السماح بتغيير اللغة بالصوت</string>
     <string name="settings_wake">كلمة التنشيط «جيلي»</string>
     <string name="settings_wake_switch">اكتشاف «جيلي» (تجريبي)</string>
-    <string name="wake_engine_note">يستخدم المحرك الحالي خدمة التعرف على الكلام في الشاشة بشكل متكرر ويبحث عن «جيلي» في كل جملة. ليس كاشفًا مخصصًا منخفض الاستهلاك: قد يستخدم الإنترنت والبطارية ويصدر صفيرًا. محرك محلي مخصص مخطط له.</string>
+    <string name="wake_engine_note">يتم اكتشاف «جيلي» مباشرة على الشاشة بنموذج مدمج: بدون Google وبدون إنترنت. الأوامر بالفرنسية والإنجليزية مفهومة بدون إنترنت. الأوامر بالعربية لا تزال تستخدم خدمة التعرف على الكلام في الشاشة إن وجدت.</string>
     <string name="settings_background">الاستماع في الخلفية</string>
     <string name="settings_bg_switch">تفعيل الخدمة في الخلفية</string>
     <string name="settings_boot_switch">البدء عند تشغيل الشاشة</string>
@@ -88,7 +88,7 @@
     <string name="diag_tts">إخراج الصوت</string>
     <string name="diag_ai">الذكاء الاصطناعي مُعد</string>
     <string name="diag_wake_engine">محرك كلمة التنشيط</string>
-    <string name="wake_engine_name">حلقة التعرف النظامية (تجريبي)</string>
+    <string name="wake_engine_name">محلي بدون إنترنت (Vosk)</string>
     <string name="diag_last_error">آخر خطأ</string>
     <string name="err_no_recognizer">لا توجد خدمة تعرف على الكلام مثبتة على هذه الشاشة.</string>
     <string name="err_network">مشكلة في الشبكة أثناء التعرف على الكلام.</string>
