@@ -16,4 +16,5 @@ fetch() { # name url-zip
 }
 fetch model-fr vosk-model-small-fr-0.22
 fetch model-en vosk-model-small-en-us-0.15
+fetch model-ar vosk-model-small-ar-tn-0.1-linto
 du -sh "$A"/*

@@ -17,10 +17,16 @@ import org.vosk.android.StorageService
 object VoskModels {
     const val SAMPLE_RATE = 16000f
 
+    /** Model used for the wake word: the French model also hears "Geely"/"يا جيلي" reliably. */
     fun assetFor(lang: String): String = if (lang == "en") "model-en" else "model-fr"
 
+    /** Model used to understand commands (Arabic uses the bundled Tunisian Arabic model). */
+    fun commandAssetFor(lang: String): String = when (lang) {
+        "en" -> "model-en"; "ar" -> "model-ar"; else -> "model-fr"
+    }
+
     /** Languages whose commands can be understood fully offline. */
-    fun commandsOffline(lang: String) = lang == "fr" || lang == "en"
+    fun commandsOffline(lang: String) = lang == "fr" || lang == "en" || lang == "ar"
 
     fun isBundled(ctx: Context, asset: String): Boolean = try {
         ctx.assets.list(asset)?.isNotEmpty() == true

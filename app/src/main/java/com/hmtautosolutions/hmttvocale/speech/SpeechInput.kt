@@ -38,12 +38,13 @@ class SpeechInput(private val context: Context, private val listener: Listener) 
     private fun systemAvailable() = SpeechRecognizer.isRecognitionAvailable(context)
 
     fun isAvailable(): Boolean = systemAvailable() ||
-        VoskModels.isBundled(context, "model-fr") || VoskModels.isBundled(context, "model-en")
+        VoskModels.isBundled(context, "model-fr") || VoskModels.isBundled(context, "model-en") ||
+        VoskModels.isBundled(context, "model-ar")
 
     fun start(languageTag: String, preferOffline: Boolean) {
         destroy()
         val lang = languageTag.substringBefore('-')
-        if (VoskModels.commandsOffline(lang) && VoskModels.isBundled(context, VoskModels.assetFor(lang))) {
+        if (VoskModels.commandsOffline(lang) && VoskModels.isBundled(context, VoskModels.commandAssetFor(lang))) {
             startVosk(lang)
         } else {
             startSystem(languageTag, preferOffline)
@@ -52,7 +53,7 @@ class SpeechInput(private val context: Context, private val listener: Listener) 
 
     private fun startVosk(lang: String) {
         val my = ++session
-        VoskModels.load(context, VoskModels.assetFor(lang)) { model, err ->
+        VoskModels.load(context, VoskModels.commandAssetFor(lang)) { model, err ->
             if (my != session) return@load
             if (model == null) { listener.onError(SpeechRecognizer.ERROR_CLIENT, err ?: ""); return@load }
             val rec = try { Recognizer(model, VoskModels.SAMPLE_RATE) } catch (e: Exception) {

@@ -70,58 +70,60 @@ class OverlayAssistant(
         active = true
         addView()
         val command = TextNormalizer.stripWakeWord(transcript).second
-        if (command.isNotBlank()) handle(transcript) else listen()
+        if (command.isNotBlank()) { handle(transcript); return }
+        // Wake reply: show "J'écoute", say "Oui", then open the mic (after the voice, so it doesn't hear itself).
+        setText(listeningText())
+        val yes = t("Oui", "Yes", "نعم")
+        if (prefs.ttsEnabled) tts.speak(yes, prefs.language, prefs.speechRate) { main.post { if (active) listen() } }
+        else listen()
     }
 
     private fun dp(v: Int) = (v * ctx.resources.displayMetrics.density).toInt()
 
     private fun addView() {
         val card = LinearLayout(ctx).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            setPadding(dp(18), dp(14), dp(24), dp(14))
+            orientation = LinearLayout.VERTICAL
+            gravity = Gravity.CENTER
+            setPadding(dp(24), dp(24), dp(24), dp(24))
             background = GradientDrawable().apply {
-                cornerRadius = dp(40).toFloat()
+                cornerRadius = dp(28).toFloat()
                 setColor(ContextCompat.getColor(ctx, R.color.hmt_surface))
-                setStroke(dp(2), ContextCompat.getColor(ctx, R.color.hmt_red))
+                setStroke(dp(3), ContextCompat.getColor(ctx, R.color.hmt_red))
             }
-            elevation = dp(12).toFloat()
+            elevation = dp(16).toFloat()
         }
         val logo = ImageView(ctx).apply { setImageResource(R.drawable.ic_logo) }
-        card.addView(logo, LinearLayout.LayoutParams(dp(44), dp(44)))
+        card.addView(logo, LinearLayout.LayoutParams(dp(72), dp(72)))
         dot = View(ctx).apply {
             background = GradientDrawable().apply {
                 shape = GradientDrawable.OVAL
                 setColor(ContextCompat.getColor(ctx, R.color.hmt_red))
             }
         }
-        card.addView(dot, LinearLayout.LayoutParams(dp(14), dp(14)).apply {
-            marginStart = dp(14); marginEnd = dp(14)
+        card.addView(dot, LinearLayout.LayoutParams(dp(22), dp(22)).apply {
+            topMargin = dp(18); bottomMargin = dp(18)
         })
         text = TextView(ctx).apply {
             setTextColor(ContextCompat.getColor(ctx, R.color.hmt_white))
-            textSize = 20f
-            maxWidth = dp(520)
-            maxLines = 3
+            textSize = 24f
+            gravity = Gravity.CENTER
+            maxLines = 4
         }
-        card.addView(text)
+        card.addView(text, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT))
         card.setOnClickListener { finish() } // tap to dismiss
 
+        val side = dp(340)
         val lp = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.WRAP_CONTENT,
-            WindowManager.LayoutParams.WRAP_CONTENT,
+            side, side,
             WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
             WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
             PixelFormat.TRANSLUCENT
-        ).apply {
-            gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
-            y = dp(24)
-        }
+        ).apply { gravity = Gravity.CENTER }
         try {
             wm.addView(card, lp)
             root = card
-            card.alpha = 0f
-            card.animate().alpha(1f).setDuration(180).start()
+            card.alpha = 0f; card.scaleX = 0.85f; card.scaleY = 0.85f
+            card.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(200).start()
         } catch (e: Exception) {
             prefs.lastError = "Overlay failed: ${e.message}"
         }
@@ -133,10 +135,12 @@ class OverlayAssistant(
     private fun setText(s: String) { if (::text.isInitialized) text.text = s }
 
     private fun listen() {
-        setText(t("Je vous écoute…", "I'm listening…", "أنا أستمع…"))
+        setText(listeningText())
         pulse?.start()
         speech.start(LocaleHelper.recognizerTag(prefs.language), preferOffline = true)
     }
+
+    private fun listeningText() = t("J'écoute…", "I'm listening…", "أنا أستمع…")
 
     override fun onPartial(text: String) { setText(text) }
 
@@ -184,11 +188,15 @@ class OverlayAssistant(
     private fun deliver(outcome: Outcome) {
         if (!active) return
         setText(outcome.message)
+        // Only a verified success is announced as "done"; unverified/failed outcomes say what really happened.
+        val spoken = if (outcome.status == OutcomeStatus.SUCCESS)
+            t("Commande effectuée.", "Done.", "تم تنفيذ الأمر.") + " " + outcome.message
+        else outcome.message
         val next = {
             if (outcome.status == OutcomeStatus.NEEDS_CONFIRMATION) main.postDelayed({ listen() }, 300)
             else main.postDelayed({ finish() }, 1500)
         }
-        if (prefs.ttsEnabled) tts.speak(outcome.message, prefs.language, prefs.speechRate) { main.post { next() } }
+        if (prefs.ttsEnabled) tts.speak(spoken, prefs.language, prefs.speechRate) { main.post { next() } }
         else next()
     }
 

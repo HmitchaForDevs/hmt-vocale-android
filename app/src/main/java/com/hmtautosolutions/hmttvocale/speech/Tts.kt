@@ -1,6 +1,8 @@
 package com.hmtautosolutions.hmttvocale.speech
 
 import android.content.Context
+import android.media.AudioManager
+import android.media.ToneGenerator
 import android.os.Handler
 import android.os.Looper
 import android.speech.tts.TextToSpeech
@@ -50,9 +52,10 @@ class Tts(context: Context) : TextToSpeech.OnInitListener {
 
     /** Returns false (and calls onDone immediately) if the voice could not be played. */
     fun speak(text: String, lang: String, rate: Float, onDone: () -> Unit): Boolean {
-        if (!ready || text.isBlank()) { onDone(); return false }
+        if (text.isBlank()) { onDone(); return false }
+        if (!ready) { beep(onDone); return false }
         val r = tts.setLanguage(LocaleHelper.speechLocale(lang))
-        if (r == TextToSpeech.LANG_MISSING_DATA || r == TextToSpeech.LANG_NOT_SUPPORTED) { onDone(); return false }
+        if (r == TextToSpeech.LANG_MISSING_DATA || r == TextToSpeech.LANG_NOT_SUPPORTED) { beep(onDone); return false }
         tts.setSpeechRate(rate)
         val id = UUID.randomUUID().toString()
         callbacks[id] = onDone
@@ -63,6 +66,15 @@ class Tts(context: Context) : TextToSpeech.OnInitListener {
             return false
         }
         return true
+    }
+
+    /** Short audible tone used when no voice is installed for the language, so the driver still hears a reply. */
+    fun beep(onDone: () -> Unit) {
+        try {
+            val tg = ToneGenerator(AudioManager.STREAM_MUSIC, 80)
+            tg.startTone(ToneGenerator.TONE_PROP_ACK, 250)
+            main.postDelayed({ try { tg.release() } catch (_: Exception) {}; onDone() }, 350)
+        } catch (_: Exception) { main.post { onDone() } }
     }
 
     fun stop() {
